@@ -1,0 +1,64 @@
+﻿@model PagedList.IPagedList<Models.Models.Article>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+@using (Html.BeginForm("Index", "NewsList", FormMethod.Get))
+{
+    <div class="form-group">
+        <div class="col-xs-4">
+            @Html.TextBox("searchStr", ViewBag.CurrentSearch as string, new { @id = "searchString", @class = "form-control" })
+        </div>
+        <div class="col-xs-4">
+            <input type="submit" class="btn btn-info" value="Search" />
+        </div>
+    </div>
+}
+
+@if (Model.Any())
+{
+    <table class="table table-striped">
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Section
+            </th>
+            <th>
+                Trail-Text
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr onclick="Redirect('@item.WebURL');" onmouseover="this.style.cursor='pointer'">
+                <td>
+                    @Html.DisplayFor(modelItem => item.WebTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SectionId)/@Html.DisplayFor(modelItem => item.SectionName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+
+
+<br />
+<br />
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page , searchStr = ViewBag.CurrentSearch}))
+
+
+<script src="~/Scripts/NewsList/NewsListScripts.js"></script>
